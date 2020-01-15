@@ -14,13 +14,30 @@
   <script src="/javascripts/vendor/all.js" charset="utf-8"></script>
 
   <!-- include spec files here... -->
-  <script src="/javascripts/spec/albums_spec.js" charset="utf-8"></script>
-
+  <style media="screen">
+    #albums { display: none; }
+  </style>
 </head>
 
 <body>
+  <ul id="albums"></ul>
+  <script data-name="albums" type="text/x-handlebars">
+    {{#each albums}}
+    <li>
+      <a href="{{tracks_url}}">
+        <img src="{{cover}}" />
+        <h2>{{title}}</h2>
+        <h3>{{artist}}</h3>
+        <p>Released: {{date}}</p>
+      </a>
+    </li>
+    {{/each}}
+  </script>
   <script src="/javascripts/models/album.js" charset="utf-8"></script>
   <script src="/javascripts/collections/albums.js" charset="utf-8"></script>
+  <script src="/javascripts/views/albums.js" charset="utf-8"></script>
   <script src="/javascripts/app.js" charset="utf-8"></script>
+  <script src="/javascripts/spec/albums_spec.js" charset="utf-8"></script>
+  <script src="/javascripts/spec/albums_view_spec.js" charset="utf-8"></script>
 </body>
 </html>
