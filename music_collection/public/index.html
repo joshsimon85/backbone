@@ -2,12 +2,16 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/application.css">
     <title>Music Collection</title>
     <script src="javascripts/vendor/all.js" charset="utf-8"></script>
   </head>
   <body>
-    <h1>Albums</h1>
-    <ul id="albums"></ul>
+    <main>
+      <h1>Albums</h1>
+      <ul id="albums"></ul>
+    </main>
     <script data-name="albums" type="text/x-handlebars">
       {{#each albums}}
       <li>
