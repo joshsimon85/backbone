@@ -9,7 +9,125 @@ var App = {
       success: this.albumsLoaded.bind(this)
     });
   },
+  tracksLoaded: function(tracks) {
+    var tracksModal = new TracksView({
+      collection: tracks,
+      album: this.selectedAlbum.toJSON()
+    });
+
+    tracksModal.render();
+    this.tracks = tracksModal;
+  },
+  fetchTracks: function(name) {
+    var tracks = new (Tracks.extend({
+      url: "/albums/" + name + ".json"
+    }))();
+
+    this.selectedAlbum = this.albums.findWhere({ title: name });
+
+    tracks.fetch({
+      success: this.tracksLoaded.bind(this)
+    });
+  },
   init: function() {
     this.fetchAlbums();
   }
 };
+
+var Router = Backbone.Router.extend({
+  getAlbum: function(name) {
+    App.fetchTracks(name);
+  },
+  routes: {
+    'album/:name': 'getAlbum'
+  },
+  index: function() {
+    if (App.tracks.$el.is(":animated")) {
+      App.tracks.fadeOut();
+    }
+  },
+  initialize: function() {
+    this.route(/^\/?$/, 'index', this.index);
+  }
+});
+
+Backbone.history.start({
+  pushState: true,
+  silent: true
+});
+
+var router = new Router();
+
+$(document).on('click', "a[href^='/']", function(e) {
+  e.preventDefault();
+  var href = e.currentTarget.href.split('/');
+  App.fetchTracks(decodeURI(href[href.length - 1]));
+  router.navigate($(e.currentTarget).attr('href').replace(/^\//, ""), { trigger: true });
+});
+
+
+// var App = {
+//   albumsLoaded: function() {
+//     this.view.render();
+//   },
+//   fetchAlbums: function() {
+//     this.albums = new Albums();
+//     this.view = new AlbumsView({ collection: this.albums });
+//     this.albums.fetch({
+//       success: this.albumsLoaded.bind(this),
+//     });
+//   },
+//   tracksLoaded: function(tracks) {
+//     var tracks_modal = new TracksView({
+//       collection: tracks,
+//       album: this.selected_album.toJSON(),
+//     });
+//
+//     tracks_modal.render();
+//     this.tracks = tracks_modal;
+//   },
+//   fetchTracks: function(name) {
+//     var tracks = new (Tracks.extend({
+//       url: '/albums/' + name + '.json',
+//     }))();
+//
+//     this.selected_album = this.albums.findWhere({ title: name });
+//
+//     tracks.fetch({
+//       success: this.tracksLoaded.bind(this),
+//     });
+//   },
+//   init: function() {
+//     this.fetchAlbums();
+//   },
+// };
+//
+// var Router = Backbone.Router.extend({
+//   routes: {
+//     'albums/:name': 'getAlbum',
+//   },
+//   getAlbum: function(name) {
+//     App.fetchTracks(name);
+//   },
+//   index: function() {
+//     if (!App.tracks.$el.is(':animated')) {
+//       App.tracks.fadeOut();
+//     }
+//   },
+//   initialize: function() {
+//     this.route(/^\/?$/, 'index', this.index);
+//   },
+// });
+//
+// var router = new Router();
+//
+// Backbone.history.start({
+//   silent: true,
+//   pushState: true,
+// });
+//
+// $(document).on('click', 'a[href^="/"]', function(e) {
+//   e.preventDefault();
+//
+//   router.navigate($(e.currentTarget).attr('href').replace(/^\//, ''), { trigger: true });
+// });
